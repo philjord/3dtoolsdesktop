@@ -1,11 +1,7 @@
 package awt.tools.image;
 
-import java.awt.image.BufferedImage;
-
 import javax.media.j3d.ImageComponent2D;
 import javax.media.j3d.Texture;
-
-import com.sun.j3d.utils.image.awt.TextureLoader;
 
 /**
  * Separated out from SimpleIamgeLoader, so servers don't have to load up the full j3d jar set
@@ -23,10 +19,12 @@ public class J3dSimpleImageLoader
 	 */
 	public static Texture getTexture(String fileName)
 	{
-		BufferedImage im = SimpleImageLoader.getImage(fileName);
+		throw new UnsupportedOperationException();
+		//BufferedImage im = SimpleImageLoader.getImage(fileName);
 		//used to force power of 2
-		TextureLoader tl = new TextureLoader(im, TextureLoader.GENERATE_MIPMAP);
-		return tl.getTexture();
+
+		//		TextureLoader tl = new TextureLoader(im, TextureLoader.GENERATE_MIPMAP);
+		//		return tl.getTexture();
 
 		/*if (im.getType() == BufferedImage.TYPE_INT_RGB)
 		{
@@ -41,6 +39,7 @@ public class J3dSimpleImageLoader
 			return tex;
 		}*/
 	}
+
 	/**
 	 * Notice no exception thrown from here, make sure fileName is a good un
 	 * @param fileName
@@ -48,10 +47,11 @@ public class J3dSimpleImageLoader
 	 */
 	public static ImageComponent2D getImageComponent2D(String fileName)
 	{
-		BufferedImage im = SimpleImageLoader.getImage(fileName);
-		TextureLoader tl = new TextureLoader(im);
+		throw new UnsupportedOperationException();
+	//	BufferedImage im = SimpleImageLoader.getImage(fileName);
+	//	TextureLoader tl = new TextureLoader(im);
 
-		return tl.getImage();
+	//	return tl.getImage();
 
 		/*	if (im.getType() == BufferedImage.TYPE_INT_RGB)
 			{
