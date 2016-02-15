@@ -40,8 +40,8 @@ import com.sun.j3d.utils.universe.SimpleUniverse;
 
 import awt.tools3d.resolution.GraphicsSettings;
 import awt.tools3d.resolution.ScreenResolution;
-import tools.ddstexture.DDSImage;
-import tools.ddstexture.DDSTextureLoader;
+import tools.compressedtexture.dds.DDSImage;
+import tools.compressedtexture.dds.DDSTextureLoader;
 import tools.swing.DetailsFileChooser;
 
 /**

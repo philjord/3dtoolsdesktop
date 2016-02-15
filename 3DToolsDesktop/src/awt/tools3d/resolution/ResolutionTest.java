@@ -29,7 +29,7 @@ import com.jogamp.newt.event.KeyAdapter;
 import com.jogamp.newt.event.KeyEvent;
 import com.sun.j3d.utils.universe.SimpleUniverse;
 
-import tools.ddstexture.DDSTextureLoader;
+import tools.compressedtexture.dds.DDSTextureLoader;
 
 public final class ResolutionTest
 {

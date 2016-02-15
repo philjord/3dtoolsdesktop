@@ -6,7 +6,8 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
 import tools.MiniFloat;
-import tools.ddstexture.DDSImage;
+import tools.compressedtexture.dds.DDSImage;
+import tools.compressedtexture.dds.utils.Color24;
 
 /**
  * Converts DDS files and streams into {@code BufferedImage}
