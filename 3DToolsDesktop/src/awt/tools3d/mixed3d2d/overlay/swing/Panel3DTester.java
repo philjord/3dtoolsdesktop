@@ -8,10 +8,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSlider;
 import javax.swing.JTextArea;
 
-import tools.GridLayout2;
-import tools3d.mixed3d2d.overlay.swing.JInternalFrame3D;
-import tools3d.mixed3d2d.overlay.swing.JPanel3D;
-import tools3d.mixed3d2d.overlay.swing.Panel3D;
+import tools.swing.GridLayout2;
 
 public class Panel3DTester
 {

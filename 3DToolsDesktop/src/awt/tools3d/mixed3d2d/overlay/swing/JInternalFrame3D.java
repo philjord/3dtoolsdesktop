@@ -13,8 +13,6 @@ import javax.swing.JInternalFrame;
 import javax.swing.JRootPane;
 import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
 
-import tools3d.mixed3d2d.overlay.swing.Panel3D;
-
 public class JInternalFrame3D extends JInternalFrame
 {
 	private static int TITLE_BAR_HEIGHT = 28;

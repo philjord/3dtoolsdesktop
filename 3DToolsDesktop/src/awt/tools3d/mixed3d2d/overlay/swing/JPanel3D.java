@@ -5,9 +5,6 @@ import java.awt.Component;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
-import tools3d.mixed3d2d.overlay.swing.JPanel3D;
-import tools3d.mixed3d2d.overlay.swing.Panel3D;
-
 public class JPanel3D extends JPanel
 {
 	private Panel3D panel3D;

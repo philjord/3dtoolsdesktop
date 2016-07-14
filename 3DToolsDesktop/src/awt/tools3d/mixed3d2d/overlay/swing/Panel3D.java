@@ -28,10 +28,8 @@ import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
 import javax.swing.text.DefaultCaret;
 import javax.swing.text.JTextComponent;
 
-import tools.GlobalKeyCatcher;
-import tools3d.mixed3d2d.Canvas3D2D;
-import tools3d.mixed3d2d.overlay.swing.JInternalFrame3D;
-import tools3d.mixed3d2d.overlay.swing.JPanel3D;
+import awt.tools3d.mixed3d2d.SwingCanvas3D2D;
+import tools.swing.GlobalKeyCatcher;
 
 /**
  * The other *3D classes in this package should be used in place of the swing versions
@@ -126,7 +124,7 @@ public class Panel3D implements MouseListener, MouseMotionListener, KeyListener
 
 	private int height = -1;
 
-	private Canvas3D2D canvas3D2D;
+	private SwingCanvas3D2D canvas3D2D;
 
 	private JTextComponent currentKeyboardTarget = null;
 
@@ -233,7 +231,7 @@ public class Panel3D implements MouseListener, MouseMotionListener, KeyListener
 		toolTipTimer.setStop();
 	}
 
-	public synchronized void setConfig(Canvas3D2D _canvas3D2D)
+	public synchronized void setConfig(SwingCanvas3D2D _canvas3D2D)
 	{
 		// de-register on the old canvas
 		if (canvas3D2D != null)

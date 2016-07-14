@@ -8,8 +8,6 @@ import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JViewport;
 
-import tools3d.mixed3d2d.overlay.swing.Panel3D;
-
 public class JScrollPane3D extends JScrollPane
 {
 	private Panel3D panel3D;
