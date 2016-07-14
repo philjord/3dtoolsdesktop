@@ -10,9 +10,9 @@ import java.util.prefs.Preferences;
 import javax.media.j3d.J3dUtil;
 import javax.swing.JOptionPane;
 
-import java2.awt.DisplayMode;
-import java2.awt.GraphicsDevice;
-import java2.awt.GraphicsEnvironment;
+import java.awt.DisplayMode;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 
 public class ScreenResolution
 {

@@ -36,9 +36,9 @@ import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
-import java2.awt.DisplayMode;
-import java2.awt.GraphicsDevice;
-import java2.awt.GraphicsEnvironment;
+import java.awt.DisplayMode;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 
 /**
  * DisplayDialog is a JDialog object that presents the user with a selection of

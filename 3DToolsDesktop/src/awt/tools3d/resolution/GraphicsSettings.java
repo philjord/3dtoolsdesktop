@@ -2,7 +2,7 @@ package awt.tools3d.resolution;
 
 import javax.swing.JOptionPane;
 
-import java2.awt.DisplayMode;
+import java.awt.DisplayMode;
 
 public class GraphicsSettings
 {
