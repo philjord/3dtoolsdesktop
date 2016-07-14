@@ -1,4 +1,4 @@
-package tools3d.camera;
+package awt.tools3d.camera;
 
 import java.awt.GridLayout;
 
@@ -6,6 +6,10 @@ import javax.swing.JPanel;
 
 import com.sun.j3d.utils.universe.ViewingPlatform;
 
+import tools3d.camera.Camera;
+import tools3d.camera.Dolly;
+import tools3d.camera.ICameraPanel;
+import tools3d.camera.IDolly;
 import tools3d.mixed3d2d.Canvas3D2D;
 import tools3d.universe.VisualPhysicalUniverse;
 

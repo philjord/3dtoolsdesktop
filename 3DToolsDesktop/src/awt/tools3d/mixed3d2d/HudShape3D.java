@@ -1,5 +1,7 @@
 package awt.tools3d.mixed3d2d;
 
+import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.image.BufferedImage;
@@ -10,28 +12,29 @@ import javax.media.j3d.Behavior;
 import javax.media.j3d.BoundingSphere;
 import javax.media.j3d.BranchGroup;
 import javax.media.j3d.GeometryArray;
+import javax.media.j3d.ImageComponent;
 import javax.media.j3d.ImageComponent2D;
 import javax.media.j3d.ImageComponent2D.Updater;
-import javax.media.j3d.J3DBuffer;
+import javax.media.j3d.Material;
+import javax.media.j3d.QuadArray;
 import javax.media.j3d.RenderingAttributes;
 import javax.media.j3d.Shape3D;
 import javax.media.j3d.Texture;
 import javax.media.j3d.Texture2D;
+import javax.media.j3d.TextureAttributes;
 import javax.media.j3d.TransparencyAttributes;
-import javax.media.j3d.TriangleArray;
 import javax.media.j3d.WakeupOnElapsedFrames;
 import javax.vecmath.Point3d;
 
-import tools3d.mixed3d2d.Canvas3D2D;
-import tools3d.utils.SimpleShaderAppearance;
-import tools3d.utils.Utils3D;
+import awt.tools3d.mixed3d2d.hud.HUDElement;
+import awt.tools3d.mixed3d2d.overlay.swing.Panel3D;
 
 /**
+ * TODO: PS why the hell have I never looked into Raster shape3ds? it looks awesome...
  * @author philip
  *
  */
-//TODO: if I use a ortho projection, then there is just 0,0,0,1,1,1 coords perfect for screen no matte what, no scale
-@Deprecated
+
 public class HudShape3D extends BranchGroup implements Updater, ComponentListener
 {
 	public static int SHAPE_TEX_WIDTH = 1024;
@@ -46,51 +49,51 @@ public class HudShape3D extends BranchGroup implements Updater, ComponentListene
 
 	private Shape3D hudShape = new Shape3D();
 
-	private Appearance app;
+	private Appearance hudShapeApp = new Appearance();
 
 	private Texture2D tex;
 
 	private ImageComponent2D hudShapeIc2d;
 
-	private Canvas3D2D canvas;
+	private SwingCanvas3D2D canvas;
 
 	private boolean finalClearRequired = false;
 
-	public HudShape3D(Canvas3D2D canvas)
+	public HudShape3D(SwingCanvas3D2D canvas)
 	{
 		this.canvas = canvas;
 
 		this.setCapability(BranchGroup.ALLOW_DETACH);
-
-		app = new SimpleShaderAppearance(true);
-
-		app.setCapability(Appearance.ALLOW_TEXTURE_READ);
-		app.setCapability(Appearance.ALLOW_TEXTURE_WRITE);
+		hudShapeApp.setCapability(Appearance.ALLOW_TEXTURE_READ);
+		hudShapeApp.setCapability(Appearance.ALLOW_TEXTURE_WRITE);
 
 		TransparencyAttributes transparencyAttributes = new TransparencyAttributes();
 		transparencyAttributes.setTransparencyMode(TransparencyAttributes.NICEST);
 		transparencyAttributes.setTransparency(0.0f);
-		app.setTransparencyAttributes(transparencyAttributes);
+		hudShapeApp.setTransparencyAttributes(transparencyAttributes);
+
+		TextureAttributes textureAttributes = new TextureAttributes();
+		textureAttributes.setTextureMode(TextureAttributes.REPLACE);
+		hudShapeApp.setTextureAttributes(textureAttributes);
+
+		Material m = new Material();
+		m.setLightingEnable(false);
+		hudShapeApp.setMaterial(m);
 
 		//keep stencil gear in check
 		RenderingAttributes ra = new RenderingAttributes();
 		ra.setDepthBufferEnable(false);
-		app.setRenderingAttributes(ra);
+		hudShapeApp.setRenderingAttributes(ra);
 
 		hudShape.setCapability(Shape3D.ALLOW_GEOMETRY_WRITE);
-		hudShape.setAppearance(app);
-		//FIXME: haha having this guy attached was causing crazy texture to smash across the shape
-		// so having texcoords and everything, but no texture unit might be destruction
-		// which I can imagine as the shader just draws something from a Sampler, whatever's 
-		//last attached or something
-		//		addChild(hudShape);
-		
+		hudShape.setAppearance(hudShapeApp);
+		addChild(hudShape);
+
 		UpdateHudTextureBehavior hudTextureBehave = new UpdateHudTextureBehavior();
 		addChild(hudTextureBehave);
 		hudTextureBehave.setEnable(true);
 
-		
-		//canvas.addComponentListener(this);
+		canvas.addComponentListener(this);
 	}
 
 	public void screenResized()
@@ -134,13 +137,12 @@ public class HudShape3D extends BranchGroup implements Updater, ComponentListene
 			tex.setMagFilter(Texture.LINEAR_SHARPEN_RGB);//Texture.BASE_LEVEL_LINEAR);
 			tex.setMinFilter(Texture.BASE_LEVEL_LINEAR);
 
-			//FIXME:!!!!! failure to communicate!
-			/*hudShapeIc2d = new ImageComponent2D(ImageComponent.FORMAT_RGBA, hudShapeBufferedImage, true, true);
+			hudShapeIc2d = new ImageComponent2D(ImageComponent.FORMAT_RGBA, hudShapeBufferedImage, true, true);
 			hudShapeIc2d.setCapability(ImageComponent.ALLOW_IMAGE_READ);
 			hudShapeIc2d.setCapability(ImageComponent.ALLOW_IMAGE_WRITE);
-			
+
 			tex.setImage(0, hudShapeIc2d);
-			app.setTexture(tex);*/
+			hudShapeApp.setTexture(tex);
 
 		}
 	}
@@ -154,26 +156,24 @@ public class HudShape3D extends BranchGroup implements Updater, ComponentListene
 	@Override
 	public void updateData(ImageComponent2D imageComponent, int x, int y, int width, int height)
 	{
-		//FIXME:!!!! Graphics2D and BufferedImage are no longer compatible!!!!
-		/*
 		if (!canvas.hasEnabledPanel3D())
 		{
 			//This method will only be called when we are attached to a scene graph, i.e. this.isLive()==true
 			// so these hudelements won't be drawn as overlays
 			Graphics2D g = hudShapeIc2d.getImage().createGraphics();
 			g.setBackground(new Color(0.0f, 0.0f, 0.0f, 0.0f));// for clear Rect to work
-		
+
 			//I'm  way better off clearing the individual hud elements little squares worth
 			//g.clearRect(0, 0, SHAPE_TEX_WIDTH, SHAPE_TEX_HEIGHT); //NOT fillRect doesn't work
-		
+
 			//ok I've got it, the hud sizes are for screen coords, but for hud shape texture
 			// I've got a fixed width of 1024, so the draws need to account for that properly
-		
+
 			float hW = (float) SHAPE_TEX_WIDTH / (float) canvas.getWidth();
 			float hH = (float) SHAPE_TEX_HEIGHT / (float) canvas.getHeight();
 			//System.out.println("hW " + hW + " = " + SHAPE_TEX_WIDTH + "/" + canvas.getWidth());
 			//	System.out.println("hH " + hH + " = " + SHAPE_TEX_HEIGHT + "/" + canvas.getHeight());
-		
+
 			//final clear for all previously removed hud elements
 			synchronized (canvas.getRemovedHudElements())
 			{
@@ -196,7 +196,7 @@ public class HudShape3D extends BranchGroup implements Updater, ComponentListene
 					}
 				}
 			}
-		
+
 			//do all clears first in case of overlapping elements
 			synchronized (canvas.getHudElements())
 			{
@@ -208,7 +208,7 @@ public class HudShape3D extends BranchGroup implements Updater, ComponentListene
 					}
 				}
 			}
-		
+
 			//see below never actually called
 			synchronized (canvas.getPanel3ds())
 			{
@@ -220,7 +220,7 @@ public class HudShape3D extends BranchGroup implements Updater, ComponentListene
 					}
 				}
 			}
-		
+
 			// now draw
 			synchronized (canvas.getHudElements())
 			{
@@ -233,7 +233,7 @@ public class HudShape3D extends BranchGroup implements Updater, ComponentListene
 					}
 				}
 			}
-		
+
 			//TODO: Note this is never in fact called, because of teh check above
 			// I can't put nice Panel3D in the hud shape because teh scaling (hW and hH) make it
 			// look too terrible
@@ -248,17 +248,17 @@ public class HudShape3D extends BranchGroup implements Updater, ComponentListene
 					}
 				}
 			}
-		
+
 			// in case we flip to post render system due to panel3Ds arriving
 			finalClearRequired = true;
-		
+
 			// Enable to help place hud elements
 			//g.setColor(new Color(1.0f, 1.0f, 1.0f, 1.0f));
 			//g.drawRect(3, 3, SHAPE_TEX_WIDTH - 6, SHAPE_TEX_HEIGHT - 6);
 			//g.drawRect(4, 4, SHAPE_TEX_WIDTH - 8, SHAPE_TEX_HEIGHT - 8);
-		
+
 			// must reset so the image displays, before TextureRetained mip level fix this wasn't needed
-			app.setTexture(tex);
+			hudShapeApp.setTexture(tex);
 		}
 		else if (finalClearRequired)
 		{
@@ -266,37 +266,29 @@ public class HudShape3D extends BranchGroup implements Updater, ComponentListene
 			g.setBackground(new Color(0.0f, 0.0f, 0.0f, 0.0f));// for clear Rect to work
 			g.clearRect(0, 0, SHAPE_TEX_WIDTH, SHAPE_TEX_HEIGHT); //NOTE fillRect doesn't work
 			finalClearRequired = false;
-			app.setTexture(tex);
+			hudShapeApp.setTexture(tex);
 		}
-		
-		*/
 
 	}
 
-	private static GeometryArray createGeometry(float rectWidth, float rectHeight, float z)
+	private static QuadArray createGeometry(float rectWidth, float rectHeight, float z)
 	{
 		float hW = rectWidth / 2f;
 		float hH = rectHeight / 2f;
 
-		float[] verts1 = { hW, -hH, z, //1
-				hW, hH, z, //2
-				-hW, hH, z, //3
-				hW, -hH, z, //1
-				-hW, hH, z, //3
-				-hW, -hH, z };//4
+		float[] verts1 =
+		{ hW, -hH, z, hW, hH, z, -hW, hH, z, -hW, -hH, z };
 
 		//-1 flip the y axis so yUp
-		float[] texCoords = { 0f, 1f, //
-				0f, 0f, //
-				-1f, 0f, //
-				0f, 1f, //
-				-1f, 0f, //
+		float[] texCoords =
+		{ 0f, 1f, //
+				0f, 0f,//
+				-1f, 0f,//
 				-1f, 1f };
 
-		TriangleArray rect = new TriangleArray(6,
-				GeometryArray.COORDINATES | GeometryArray.TEXTURE_COORDINATE_2 | GeometryArray.USE_NIO_BUFFER | GeometryArray.BY_REFERENCE);
-		rect.setCoordRefBuffer(new J3DBuffer(Utils3D.makeFloatBuffer(verts1)));
-		rect.setTexCoordRefBuffer(0, new J3DBuffer(Utils3D.makeFloatBuffer(texCoords)));
+		QuadArray rect = new QuadArray(4, GeometryArray.COORDINATES | GeometryArray.TEXTURE_COORDINATE_2);
+		rect.setCoordinates(0, verts1);
+		rect.setTextureCoordinates(0, 0, texCoords);
 
 		return rect;
 	}
@@ -336,7 +328,8 @@ public class HudShape3D extends BranchGroup implements Updater, ComponentListene
 			wakeupOn(wakeupCriterion);
 		}
 
-		@SuppressWarnings({ "rawtypes" })
+		@SuppressWarnings(
+		{ "unchecked", "rawtypes" })
 		public void processStimulus(Enumeration critiria)
 		{
 			updateHudShapeTexture();

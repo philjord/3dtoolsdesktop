@@ -1,4 +1,4 @@
-package tools3d.camera;
+package awt.tools3d.camera;
 
 import java.awt.GridLayout;
 
@@ -12,6 +12,9 @@ import javax.vecmath.Point3d;
 import javax.vecmath.Vector3f;
 
 import tools3d.audio.JOALMixer;
+import tools3d.camera.HMDCamDolly;
+import tools3d.camera.ICameraPanel;
+import tools3d.camera.IDolly;
 import tools3d.mixed3d2d.Canvas3D2D;
 import tools3d.ovr.HmdDesc;
 import tools3d.ovr.HmdInfo;
