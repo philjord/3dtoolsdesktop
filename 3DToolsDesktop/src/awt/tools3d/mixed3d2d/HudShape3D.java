@@ -93,7 +93,7 @@ public class HudShape3D extends BranchGroup implements Updater, ComponentListene
 		addChild(hudTextureBehave);
 		hudTextureBehave.setEnable(true);
 
-		canvas.addComponentListener(this);
+		//FIXME:**********		canvas.addComponentListener(this);
 	}
 
 	public void screenResized()
@@ -137,7 +137,7 @@ public class HudShape3D extends BranchGroup implements Updater, ComponentListene
 			tex.setMagFilter(Texture.LINEAR_SHARPEN_RGB);//Texture.BASE_LEVEL_LINEAR);
 			tex.setMinFilter(Texture.BASE_LEVEL_LINEAR);
 
-			hudShapeIc2d = new ImageComponent2D(ImageComponent.FORMAT_RGBA, hudShapeBufferedImage, true, true);
+			//FIXME:**********				hudShapeIc2d = new ImageComponent2D(ImageComponent.FORMAT_RGBA, hudShapeBufferedImage, true, true);
 			hudShapeIc2d.setCapability(ImageComponent.ALLOW_IMAGE_READ);
 			hudShapeIc2d.setCapability(ImageComponent.ALLOW_IMAGE_WRITE);
 
@@ -160,7 +160,8 @@ public class HudShape3D extends BranchGroup implements Updater, ComponentListene
 		{
 			//This method will only be called when we are attached to a scene graph, i.e. this.isLive()==true
 			// so these hudelements won't be drawn as overlays
-			Graphics2D g = hudShapeIc2d.getImage().createGraphics();
+			//FIXME:**********				Graphics2D g = hudShapeIc2d.getImage().createGraphics();
+			Graphics2D g =null;
 			g.setBackground(new Color(0.0f, 0.0f, 0.0f, 0.0f));// for clear Rect to work
 
 			//I'm  way better off clearing the individual hud elements little squares worth
@@ -262,7 +263,8 @@ public class HudShape3D extends BranchGroup implements Updater, ComponentListene
 		}
 		else if (finalClearRequired)
 		{
-			Graphics2D g = hudShapeIc2d.getImage().createGraphics();
+			//FIXME:**********				Graphics2D g = hudShapeIc2d.getImage().createGraphics();
+			Graphics2D g =null;
 			g.setBackground(new Color(0.0f, 0.0f, 0.0f, 0.0f));// for clear Rect to work
 			g.clearRect(0, 0, SHAPE_TEX_WIDTH, SHAPE_TEX_HEIGHT); //NOTE fillRect doesn't work
 			finalClearRequired = false;

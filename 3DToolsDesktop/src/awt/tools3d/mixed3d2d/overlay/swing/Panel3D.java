@@ -237,8 +237,8 @@ public class Panel3D implements MouseListener, MouseMotionListener, KeyListener
 		if (canvas3D2D != null)
 		{
 			canvas3D2D.removePanel3D(this);
-			canvas3D2D.removeMouseListener(this);
-			canvas3D2D.removeMouseMotionListener(this);
+//FIXME:**********			canvas3D2D.removeMouseListener(this);
+			//FIXME:**********				canvas3D2D.removeMouseMotionListener(this);
 		}
 
 		canvas3D2D = _canvas3D2D;
@@ -246,10 +246,10 @@ public class Panel3D implements MouseListener, MouseMotionListener, KeyListener
 		if (canvas3D2D != null)
 		{
 			canvas3D2D.addPanel3D(this);
-			canvas3D2D.addMouseListener(this);
-			canvas3D2D.addMouseMotionListener(this);
-			canvas3D2D.addComponentListener(new ComponentAdapter()
-			{
+			//FIXME:**********				canvas3D2D.addMouseListener(this);
+			//FIXME:**********				canvas3D2D.addMouseMotionListener(this);
+			//FIXME:**********				canvas3D2D.addComponentListener(new ComponentAdapter()
+/*			{
 				@Override
 				public void componentResized(ComponentEvent e)
 				{
@@ -262,7 +262,7 @@ public class Panel3D implements MouseListener, MouseMotionListener, KeyListener
 					screenResized();
 				}
 
-			});
+			});*/
 			screenResized();
 		}
 

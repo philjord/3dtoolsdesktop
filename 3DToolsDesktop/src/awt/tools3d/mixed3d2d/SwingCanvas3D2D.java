@@ -1,5 +1,6 @@
 package awt.tools3d.mixed3d2d;
 
+import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
 import java.util.ArrayList;
 
@@ -52,7 +53,7 @@ public class SwingCanvas3D2D extends Canvas3D
 
 	public SwingCanvas3D2D(GraphicsConfiguration gc)
 	{
-		super(gc);
+		//FIXME:**********super(gc);
 		hudShapeBG = new HudShape3D(this);
 
 	}
@@ -129,10 +130,10 @@ public class SwingCanvas3D2D extends Canvas3D
 			// Longer version, if the last rendered texture on a canvas3d has a transformation
 			// then calls to the J3DGraphics2D will inherit it. Easy way to ensure last texture is plain, render trival cube.
 			//RAISE_BUG:
-			getGraphicsContext3D().draw(trivialShape);
+			//FIXME:**********			getGraphicsContext3D().draw(trivialShape);
 
-			J3DGraphics2D g = getGraphics2D();
-
+			//FIXME:**********			J3DGraphics2D g = getGraphics2D();
+			 Graphics2D g =null;
 			synchronized (hudElements)
 			{
 				for (HUDElement e : hudElements)
@@ -155,7 +156,7 @@ public class SwingCanvas3D2D extends Canvas3D
 				}
 			}
 
-			g.flush(false);
+			//FIXME:**********			g.flush(false);
 		}
 
 	}
