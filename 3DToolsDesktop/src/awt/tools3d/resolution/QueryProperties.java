@@ -97,7 +97,7 @@ public class QueryProperties extends JFrame
 		props.list(System.out);
 
 		//and output if java3d is sealed too for fun
-		System.out.println("javax.media.j3d isSealed? " + Package.getPackage("javax.media.j3d").isSealed());
+		System.out.println("org.jogamp.java3d isSealed? " + Package.getPackage("org.jogamp.java3d").isSealed());
 		checkForInstalledJ3d();
 	}
 
