@@ -4,7 +4,7 @@ import java.awt.GridLayout;
 
 import javax.swing.JPanel;
 
-import com.sun.j3d.utils.universe.ViewingPlatform;
+import org.jogamp.java3d.utils.universe.ViewingPlatform;
 
 import tools3d.camera.Camera;
 import tools3d.camera.Dolly;
