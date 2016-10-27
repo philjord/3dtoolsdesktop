@@ -7,8 +7,9 @@ import java.awt.Dimension;
 import java.awt.Point;
 import java.util.prefs.Preferences;
 
-import javax.media.j3d.J3dUtil;
 import javax.swing.JOptionPane;
+
+import org.jogamp.java3d.J3dUtil;
 
 import java.awt.DisplayMode;
 import java.awt.GraphicsDevice;

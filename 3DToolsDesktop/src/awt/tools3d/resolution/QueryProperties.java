@@ -14,13 +14,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import javax.media.j3d.Canvas3D;
-import javax.media.j3d.GraphicsConfigTemplate3D;
-import javax.media.j3d.VirtualUniverse;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+
+import org.jogamp.java3d.Canvas3D;
+import org.jogamp.java3d.GraphicsConfigTemplate3D;
+import org.jogamp.java3d.VirtualUniverse;
 
 import java2.awt.GraphicsConfiguration;
 import java2.awt.GraphicsEnvironment;

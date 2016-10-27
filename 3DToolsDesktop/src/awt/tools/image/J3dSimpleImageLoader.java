@@ -1,7 +1,7 @@
 package awt.tools.image;
 
-import javax.media.j3d.ImageComponent2D;
-import javax.media.j3d.Texture;
+import org.jogamp.java3d.ImageComponent2D;
+import org.jogamp.java3d.Texture;
 
 /**
  * Separated out from SimpleIamgeLoader, so servers don't have to load up the full j3d jar set

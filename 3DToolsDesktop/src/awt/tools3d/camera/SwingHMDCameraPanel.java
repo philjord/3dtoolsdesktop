@@ -2,14 +2,15 @@ package awt.tools3d.camera;
 
 import java.awt.GridLayout;
 
-import javax.media.j3d.Canvas3D;
-import javax.media.j3d.PhysicalBody;
-import javax.media.j3d.PhysicalEnvironment;
-import javax.media.j3d.Transform3D;
-import javax.media.j3d.View;
 import javax.swing.JPanel;
 import javax.vecmath.Point3d;
 import javax.vecmath.Vector3f;
+
+import org.jogamp.java3d.Canvas3D;
+import org.jogamp.java3d.PhysicalBody;
+import org.jogamp.java3d.PhysicalEnvironment;
+import org.jogamp.java3d.Transform3D;
+import org.jogamp.java3d.View;
 
 import tools3d.audio.JOALMixer;
 import tools3d.camera.HMDCamDolly;

@@ -4,9 +4,9 @@ import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
 import java.util.ArrayList;
 
-import javax.media.j3d.BranchGroup;
-import javax.media.j3d.Canvas3D;
-import javax.media.j3d.Shape3D;
+import org.jogamp.java3d.BranchGroup;
+import org.jogamp.java3d.Canvas3D;
+import org.jogamp.java3d.Shape3D;
 
 import awt.tools3d.mixed3d2d.hud.HUDElement;
 import awt.tools3d.mixed3d2d.overlay.swing.Panel3D;
