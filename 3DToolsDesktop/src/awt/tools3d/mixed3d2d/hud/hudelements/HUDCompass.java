@@ -1,10 +1,11 @@
 package awt.tools3d.mixed3d2d.hud.hudelements;
 
 import java.awt.Font;
-import java.awt.Color;
 
-import javax.vecmath.Quat4f;
-import javax.vecmath.Vector3f;
+import org.jogamp.vecmath.Quat4f;
+import org.jogamp.vecmath.Vector3f;
+
+import java.awt.Color;
 
 import awt.tools3d.mixed3d2d.hud.HUDElement;
 import awt.tools3d.mixed3d2d.hud.HUDElementContainer;

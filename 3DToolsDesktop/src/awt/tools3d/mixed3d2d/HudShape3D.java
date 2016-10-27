@@ -7,8 +7,6 @@ import java.awt.event.ComponentListener;
 import java.awt.image.BufferedImage;
 import java.util.Enumeration;
 
-import javax.vecmath.Point3d;
-
 import org.jogamp.java3d.Appearance;
 import org.jogamp.java3d.Behavior;
 import org.jogamp.java3d.BoundingSphere;
@@ -26,6 +24,7 @@ import org.jogamp.java3d.TextureAttributes;
 import org.jogamp.java3d.TransparencyAttributes;
 import org.jogamp.java3d.WakeupOnElapsedFrames;
 import org.jogamp.java3d.ImageComponent2D.Updater;
+import org.jogamp.vecmath.Point3d;
 
 import awt.tools3d.mixed3d2d.hud.HUDElement;
 import awt.tools3d.mixed3d2d.overlay.swing.Panel3D;

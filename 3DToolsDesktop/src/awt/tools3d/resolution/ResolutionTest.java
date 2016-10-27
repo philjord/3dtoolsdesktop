@@ -8,9 +8,6 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.WindowConstants;
-import javax.vecmath.Color3f;
-import javax.vecmath.Point3d;
-import javax.vecmath.Point3f;
 
 import org.jogamp.java3d.Alpha;
 import org.jogamp.java3d.Appearance;
@@ -24,6 +21,9 @@ import org.jogamp.java3d.Shape3D;
 import org.jogamp.java3d.Transform3D;
 import org.jogamp.java3d.TransformGroup;
 import org.jogamp.java3d.TriangleArray;
+import org.jogamp.vecmath.Color3f;
+import org.jogamp.vecmath.Point3d;
+import org.jogamp.vecmath.Point3f;
 
 import com.jogamp.newt.event.KeyAdapter;
 import com.jogamp.newt.event.KeyEvent;
