@@ -23,8 +23,8 @@ import org.jogamp.java3d.Canvas3D;
 import org.jogamp.java3d.GraphicsConfigTemplate3D;
 import org.jogamp.java3d.VirtualUniverse;
 
-import java2.awt.GraphicsConfiguration;
-import java2.awt.GraphicsEnvironment;
+import javaawt.GraphicsConfiguration;
+import javaawt.GraphicsEnvironment;
 
 @SuppressWarnings("all")
 public class QueryProperties extends JFrame
