@@ -26,12 +26,6 @@ import org.jogamp.vecmath.Vector3f;
 public final class SSCCE
 {
 	/**SSCCE I need
-			// mip map issue max level check
-			// renderingattributes needed all round if stencil on
-			// removeChild slowness (users)
-			// postrender transform on texture
-			// possibly the capsule shape intersect code?
-			// reset of resolution bust the world - removeNotify
 			// switches not working with links under them
 			// problem that requesting a depth buffer can give back a very small depth buffer (on mac) like 8 or 16bit
 			// IndexRow of GeometryInfo slowness issue
