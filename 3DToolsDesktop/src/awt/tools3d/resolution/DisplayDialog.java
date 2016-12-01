@@ -72,11 +72,11 @@ public final class DisplayDialog extends JPanel implements ActionListener
 
 	private Map<String, ArrayList<DisplayMode>> displayModesByRes = new HashMap<String, ArrayList<DisplayMode>>();
 
-	private final JComboBox<String> modesDropDown = new JComboBox<String>();
+	private final JComboBox modesDropDown = new JComboBox();
 
-	private final JComboBox<String> bitDepthDropDown = new JComboBox<String>();
+	private final JComboBox bitDepthDropDown = new JComboBox();
 
-	private final JComboBox<String> refreshDropDown = new JComboBox<String>();
+	private final JComboBox refreshDropDown = new JComboBox();
 
 	private JSlider anisotropicFilterDegree;
 
