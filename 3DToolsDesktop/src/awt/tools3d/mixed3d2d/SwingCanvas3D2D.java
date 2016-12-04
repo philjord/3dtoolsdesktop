@@ -7,10 +7,10 @@ import java.util.ArrayList;
 import org.jogamp.java3d.BranchGroup;
 import org.jogamp.java3d.Canvas3D;
 import org.jogamp.java3d.Shape3D;
+import org.jogamp.java3d.utils.shader.Cube;
 
 import awt.tools3d.mixed3d2d.hud.HUDElement;
 import awt.tools3d.mixed3d2d.overlay.swing.Panel3D;
-import tools3d.utils.leafnode.Cube;
 
 /**
  * TODO: a write up, hud and overlay are seperate
