@@ -15,7 +15,7 @@ import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
@@ -209,11 +209,11 @@ public final class DisplayDialog extends JPanel implements ActionListener
 
 		anisotropicFilterDegree = new JSlider(0, 5, 0);
 		Hashtable<?, ?> labels = anisotropicFilterDegree.createStandardLabels(1, 0);
-		Enumeration<?> e = labels.keys();
+		Iterator<?> e = labels.keySet().iterator();
 
-		while (e.hasMoreElements())
+		while (e.hasNext())
 		{
-			Integer i = (Integer) e.nextElement();
+			Integer i = (Integer) e.next();
 			JLabel label = (JLabel) labels.get(i);
 			label.setText(i == 0 ? "Off" : ("" + (int) Math.pow(2, i - 1)));
 		}

@@ -1,9 +1,10 @@
 package awt.tools3d.resolution;
 
-import java.util.Enumeration;
+import java.util.Iterator;
 
 import org.jogamp.java3d.Behavior;
 import org.jogamp.java3d.BranchGroup;
+import org.jogamp.java3d.WakeupCriterion;
 import org.jogamp.java3d.WakeupOnElapsedFrames;
 import org.jogamp.java3d.WakeupOnElapsedTime;
 
@@ -46,13 +47,14 @@ public class ConsoleFPSCounter
 	{
 		private WakeupOnElapsedFrames wakeUp = new WakeupOnElapsedFrames(FRAME_SAMPLE);
 
+		@Override
 		public void initialize()
 		{
 			wakeupOn(wakeUp);
 		}
 
-		@SuppressWarnings("rawtypes")
-		public void processStimulus(Enumeration critera)
+		@Override
+		public void processStimulus(Iterator<WakeupCriterion> critera)
 		{
 			currtime = System.currentTimeMillis();
 			deltatime = currtime - lasttime;
@@ -70,13 +72,14 @@ public class ConsoleFPSCounter
 	{
 		private WakeupOnElapsedTime wakeUp = new WakeupOnElapsedTime(TIME_SAMPLE);
 
+		@Override
 		public void initialize()
 		{
 			wakeupOn(wakeUp);
 		}
 
-		@SuppressWarnings("rawtypes")
-		public void processStimulus(Enumeration critera)
+		@Override
+		public void processStimulus(Iterator<WakeupCriterion> critera)
 		{
 			// time is in millisec, so multiply by 1000 to get frames/sec
 			double fps = numOfFrames / (timeOfFrames / 1000.0);

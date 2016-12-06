@@ -5,7 +5,7 @@ import java.awt.Graphics2D;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.image.BufferedImage;
-import java.util.Enumeration;
+import java.util.Iterator;
 
 import org.jogamp.java3d.Appearance;
 import org.jogamp.java3d.Behavior;
@@ -14,6 +14,7 @@ import org.jogamp.java3d.BranchGroup;
 import org.jogamp.java3d.GeometryArray;
 import org.jogamp.java3d.ImageComponent;
 import org.jogamp.java3d.ImageComponent2D;
+import org.jogamp.java3d.ImageComponent2D.Updater;
 import org.jogamp.java3d.Material;
 import org.jogamp.java3d.QuadArray;
 import org.jogamp.java3d.RenderingAttributes;
@@ -22,8 +23,8 @@ import org.jogamp.java3d.Texture;
 import org.jogamp.java3d.Texture2D;
 import org.jogamp.java3d.TextureAttributes;
 import org.jogamp.java3d.TransparencyAttributes;
+import org.jogamp.java3d.WakeupCriterion;
 import org.jogamp.java3d.WakeupOnElapsedFrames;
-import org.jogamp.java3d.ImageComponent2D.Updater;
 import org.jogamp.vecmath.Point3d;
 
 import awt.tools3d.mixed3d2d.hud.HUDElement;
@@ -323,6 +324,7 @@ public class HudShape3D extends BranchGroup implements Updater, ComponentListene
 
 		//private WakeupOnElapsedTime wakeupCriterion = new WakeupOnElapsedTime(100);
 
+		@Override
 		public void initialize()
 		{
 			// see also UpdateLastPerFrameBehavior
@@ -330,9 +332,8 @@ public class HudShape3D extends BranchGroup implements Updater, ComponentListene
 			wakeupOn(wakeupCriterion);
 		}
 
-		@SuppressWarnings(
-		{ "unchecked", "rawtypes" })
-		public void processStimulus(Enumeration critiria)
+		@Override
+		public void processStimulus(Iterator<WakeupCriterion> critiria)
 		{
 			updateHudShapeTexture();
 			wakeupOn(wakeupCriterion);

@@ -1,11 +1,12 @@
 package awt.tools3d.mixed3d2d.hud.hudelements;
 
-import java.awt.Font;
 import java.awt.Color;
-import java.util.Enumeration;
+import java.awt.Font;
+import java.util.Iterator;
 
 import org.jogamp.java3d.Behavior;
 import org.jogamp.java3d.BranchGroup;
+import org.jogamp.java3d.WakeupCriterion;
 import org.jogamp.java3d.WakeupOnElapsedTime;
 
 import awt.tools3d.mixed3d2d.hud.HUDElement;
@@ -69,13 +70,14 @@ public class HUDPhysicsState extends HUDElementContainer
 	{
 		private WakeupOnElapsedTime wakeUp = new WakeupOnElapsedTime(TIME_SAMPLE);
 
+		@Override
 		public void initialize()
 		{
 			wakeupOn(wakeUp);
 		}
 
-		@SuppressWarnings({ "rawtypes" })
-		public void processStimulus(Enumeration critera)
+		@Override
+		public void processStimulus(Iterator<WakeupCriterion> critera)
 		{
 			textElement.clear();
 			textElement.getGraphics().setColor(fpsTextColor);
