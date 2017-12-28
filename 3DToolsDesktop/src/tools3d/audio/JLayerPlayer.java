@@ -29,6 +29,7 @@ public class JLayerPlayer
 		Thread thread = new Thread(new Runnable()
 		{
 
+			@Override
 			public void run()
 			{
 				AudioInputStream din = null;
