@@ -30,6 +30,7 @@ import org.jogamp.java3d.Shape3D;
 import org.jogamp.java3d.Transform3D;
 import org.jogamp.java3d.TransformGroup;
 import org.jogamp.java3d.TriangleArray;
+import org.jogamp.java3d.compressedtexture.CompressedTextureLoader;
 import org.jogamp.java3d.utils.universe.SimpleUniverse;
 import org.jogamp.vecmath.Color3f;
 import org.jogamp.vecmath.Point3d;
@@ -41,8 +42,7 @@ import com.jogamp.newt.event.KeyEvent;
 
 import awt.tools3d.resolution.GraphicsSettings;
 import awt.tools3d.resolution.ScreenResolution;
-import tools.compressedtexture.dds.DDSImage;
-import tools.compressedtexture.dds.DDSTextureLoader;
+import compressedtexture.DDSImage;
 import tools.swing.DetailsFileChooser;
 
 /**
@@ -139,7 +139,7 @@ public class DDSTextureLoaderTester
 		DDSImage ddsImage;
 		try
 		{
-			ddsImage = DDSImage.read(DDSTextureLoader.toByteBuffer(inputStream));
+			ddsImage = DDSImage.read(CompressedTextureLoader.toByteBuffer(inputStream));
 			ddsImage.debugPrint();
 		}
 		catch (IOException e)
@@ -222,7 +222,7 @@ public class DDSTextureLoaderTester
 		su.addBranchGraph(createSceneGraph(filename, inputStream));
 
 		canvas3D.getView().setSceneAntialiasingEnable(gs.isAaRequired());
-		DDSTextureLoader.setAnisotropicFilterDegree(gs.getAnisotropicFilterDegree());
+		CompressedTextureLoader.setAnisotropicFilterDegree(gs.getAnisotropicFilterDegree());
 
 		// don't bother super fast for now
 		//ConsoleFPSCounter fps = new ConsoleFPSCounter();
@@ -266,7 +266,7 @@ public class DDSTextureLoaderTester
 		ap.setPolygonAttributes(pa);
 		shape.setAppearance(ap);
 
-		ap.setTexture(DDSTextureLoader.getTexture(filename, inputStream));
+		ap.setTexture(CompressedTextureLoader.DDS.getTexture(filename, inputStream));
 
 		// Set up a simple RotationInterpolator
 		BoundingSphere bounds = new BoundingSphere(new Point3d(0.0, 0.0, 0.0), 5.0);

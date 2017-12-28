@@ -20,7 +20,5 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/vecmath"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/3DTools"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/java3d-compressedtexture"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/java3d-awtfacade"/>
 	<classpathentry kind="output" path="output"/>
 </classpath>

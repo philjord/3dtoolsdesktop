@@ -21,6 +21,7 @@ import org.jogamp.java3d.Shape3D;
 import org.jogamp.java3d.Transform3D;
 import org.jogamp.java3d.TransformGroup;
 import org.jogamp.java3d.TriangleArray;
+import org.jogamp.java3d.compressedtexture.CompressedTextureLoader;
 import org.jogamp.java3d.utils.universe.SimpleUniverse;
 import org.jogamp.vecmath.Color3f;
 import org.jogamp.vecmath.Point3d;
@@ -28,8 +29,6 @@ import org.jogamp.vecmath.Point3f;
 
 import com.jogamp.newt.event.KeyAdapter;
 import com.jogamp.newt.event.KeyEvent;
-
-import tools.compressedtexture.dds.DDSTextureLoader;
 
 public final class ResolutionTest
 {
@@ -58,6 +57,7 @@ public final class ResolutionTest
 		GraphicsSettings gs = ScreenResolution.organiseResolution(null, win, false, true, true);
 
 		canvas3D.getGLWindow().addKeyListener(new KeyAdapter() {
+			@Override
 			public void keyPressed(KeyEvent e)
 			{
 				final int keyCode = e.getKeyCode();
@@ -73,7 +73,7 @@ public final class ResolutionTest
 		su.addBranchGraph(createSceneGraph());
 
 		canvas3D.getView().setSceneAntialiasingEnable(gs.isAaRequired());
-		DDSTextureLoader.setAnisotropicFilterDegree(gs.getAnisotropicFilterDegree());
+		CompressedTextureLoader.setAnisotropicFilterDegree(gs.getAnisotropicFilterDegree());
 
 		// don't bother super fast for now
 		//ConsoleFPSCounter fps = new ConsoleFPSCounter();
@@ -86,7 +86,7 @@ public final class ResolutionTest
 				GraphicsSettings gs = ScreenResolution.organiseResolution(null, win, false, false, false);
 
 				canvas3D.getView().setSceneAntialiasingEnable(gs.isAaRequired());
-				DDSTextureLoader.setAnisotropicFilterDegree(gs.getAnisotropicFilterDegree());
+				CompressedTextureLoader.setAnisotropicFilterDegree(gs.getAnisotropicFilterDegree());
 
 			}
 		});
