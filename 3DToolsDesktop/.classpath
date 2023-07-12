@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry excluding="JRiftLibrary/" kind="src" path="src"/>
+	<classpathentry kind="lib" path="C:/Users/pjnz/git/awtshim-desktop/awtshim-desktop/output/awtshim-desktop.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/java3d-core-and"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Tools"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/java3d-utils-and"/>

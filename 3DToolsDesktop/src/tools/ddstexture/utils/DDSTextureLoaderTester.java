@@ -3,7 +3,6 @@ package tools.ddstexture.utils;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Graphics2D;
-
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -15,24 +14,23 @@ import java.util.prefs.Preferences;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.WindowConstants;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.jogamp.java3d.Alpha;
-import org.jogamp.java3d.Appearance;
 import org.jogamp.java3d.BoundingSphere;
 import org.jogamp.java3d.BranchGroup;
 import org.jogamp.java3d.Canvas3D;
 import org.jogamp.java3d.GeometryArray;
+import org.jogamp.java3d.IndexedTriangleStripArray;
 import org.jogamp.java3d.PolygonAttributes;
 import org.jogamp.java3d.RotationInterpolator;
 import org.jogamp.java3d.Shape3D;
 import org.jogamp.java3d.Transform3D;
 import org.jogamp.java3d.TransformGroup;
-import org.jogamp.java3d.TriangleArray;
 import org.jogamp.java3d.compressedtexture.CompressedTextureLoader;
+import org.jogamp.java3d.compressedtexture.dktxtools.dds.DDSDecompressor;
+import org.jogamp.java3d.utils.shader.SimpleShaderAppearance;
 import org.jogamp.java3d.utils.universe.SimpleUniverse;
-import org.jogamp.vecmath.Color3f;
 import org.jogamp.vecmath.Point3d;
 import org.jogamp.vecmath.Point3f;
 import org.jogamp.vecmath.TexCoord2f;
@@ -40,13 +38,11 @@ import org.jogamp.vecmath.TexCoord2f;
 import com.jogamp.newt.event.KeyAdapter;
 import com.jogamp.newt.event.KeyEvent;
 
-import awt.tools3d.resolution.GraphicsSettings;
-import awt.tools3d.resolution.ScreenResolution;
 import compressedtexture.DDSImage;
 import tools.swing.DetailsFileChooser;
 
 /**
- * dds image loading tester, note this use teh decompress to buffered image util system
+ * dds image loading tester, note this use the decompressor to buffered image util system
  * not the jogl compressed call
  * @author philip
  *
@@ -54,11 +50,12 @@ import tools.swing.DetailsFileChooser;
 public class DDSTextureLoaderTester
 {
 	private static Preferences prefs;
-
+	
+	
 	public static void main(String[] args)
 	{
 		prefs = Preferences.userNodeForPackage(DDSTextureLoaderTester.class);
-
+		
 		DetailsFileChooser dfc = new DetailsFileChooser(prefs.get("DDSToTexture", ""), new DetailsFileChooser.Listener() {
 			@Override
 			public void directorySelected(File dir)
@@ -121,6 +118,8 @@ public class DDSTextureLoaderTester
 		try
 		{
 			showImage(filename, new FileInputStream(file), stayTime);
+			
+			//TODO: this should be fine, but shows blank?
 			//showImageInShape(filename, new FileInputStream(file));
 		}
 		catch (IOException e)
@@ -153,8 +152,9 @@ public class DDSTextureLoaderTester
 		int height = -1;
 		int width = 0;
 		for (int i = 0; i < infos.length; i++)
-		{
-			BufferedImage image = new DDSDecompressor(ddsImage, i, filename).convertImage();
+		{			
+			javaawt.image.BufferedImage image2 = new DDSDecompressor(ddsImage, i, filename).convertImage();
+			java.awt.image.BufferedImage image = (BufferedImage)image2.getDelegate();
 			if (image != null)
 			{
 				if (height == -1)// height of first big one only
@@ -197,14 +197,14 @@ public class DDSTextureLoaderTester
 	public static void showImageInShape(String filename, InputStream inputStream)
 	{
 		//note win construction MUST occur beofre asking for graphics environment etc.
-		JFrame win = new JFrame("Fullscreen Example");
-		win.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+		//JFrame win = new JFrame("Fullscreen Example");
+		//win.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
 		Canvas3D canvas3D = new Canvas3D();
 		//win.add(canvas3D);
 		canvas3D.addNotify();
 		
-		GraphicsSettings gs = ScreenResolution.organiseResolution(null, win, false, true, true);
+		//GraphicsSettings gs = ScreenResolution.organiseResolution(null, win, false, true, true);
 
 		canvas3D.getGLWindow().addKeyListener(new KeyAdapter() {
 			public void keyPressed(KeyEvent e)
@@ -221,8 +221,8 @@ public class DDSTextureLoaderTester
 		su.getViewingPlatform().setNominalViewingTransform(); // back away from object a little
 		su.addBranchGraph(createSceneGraph(filename, inputStream));
 
-		canvas3D.getView().setSceneAntialiasingEnable(gs.isAaRequired());
-		CompressedTextureLoader.setAnisotropicFilterDegree(gs.getAnisotropicFilterDegree());
+		//canvas3D.getView().setSceneAntialiasingEnable(gs.isAaRequired());
+		//CompressedTextureLoader.setAnisotropicFilterDegree(gs.getAnisotropicFilterDegree());
 
 		// don't bother super fast for now
 		//ConsoleFPSCounter fps = new ConsoleFPSCounter();
@@ -238,29 +238,29 @@ public class DDSTextureLoaderTester
 	{
 		final BranchGroup objRoot = new BranchGroup();
 
-		// Create a triangle with each point a different color.  Remember to
-		// draw the points in counter-clockwise order.  That is the default
-		// way of determining which is the front of a polygon.
-		//        o (1)
-		//       / \
-		//      /   \
-		// (2) o-----o (0)
 		Shape3D shape = new Shape3D();
-		TriangleArray tri = new TriangleArray(3, GeometryArray.COORDINATES | GeometryArray.COLOR_3 | GeometryArray.TEXTURE_COORDINATE_2);
-		tri.setCoordinate(0, new Point3f(0.5f, 0.0f, 0.0f));
-		tri.setCoordinate(1, new Point3f(0.0f, 0.5f, 0.0f));
-		tri.setCoordinate(2, new Point3f(-0.5f, 0.0f, 0.0f));
-		tri.setColor(0, new Color3f(1.0f, 0.0f, 0.0f));
-		tri.setColor(1, new Color3f(0.0f, 1.0f, 0.0f));
-		tri.setColor(2, new Color3f(0.0f, 0.0f, 1.0f));
-
-		tri.setTextureCoordinate(0, 0, new TexCoord2f(1.0f, 0.5f));
-		tri.setTextureCoordinate(0, 1, new TexCoord2f(0.0f, 0.0f));
-		tri.setTextureCoordinate(0, 2, new TexCoord2f(0.0f, 1.0f));
+		IndexedTriangleStripArray tri = new IndexedTriangleStripArray(4, GeometryArray.USE_COORD_INDEX_ONLY | GeometryArray.COORDINATES | GeometryArray.TEXTURE_COORDINATE_2, 6, new int[] {6});
+		tri.setCoordinate(0, new Point3f(-0.5f, 0.0f, 0.0f));
+		tri.setCoordinate(1, new Point3f(0.5f, 0.0f, 0.0f));
+		tri.setCoordinate(2, new Point3f(0.5f, 0.5f, 0.0f));
+		tri.setCoordinate(3, new Point3f(-0.5f, 0.5f, 0.0f));
+		
+		tri.setTextureCoordinate(0, 0, new TexCoord2f(0.0f, 0.0f));
+		tri.setTextureCoordinate(0, 1, new TexCoord2f(1.0f, 0.0f));
+		tri.setTextureCoordinate(0, 2, new TexCoord2f(1.0f, 1.0f));
+		tri.setTextureCoordinate(0, 3, new TexCoord2f(0.0f, 1.0f));
+		
+		tri.setCoordinateIndex(0, 0);
+		tri.setCoordinateIndex(0, 1);
+		tri.setCoordinateIndex(0, 2);
+		tri.setCoordinateIndex(0, 0);
+		tri.setCoordinateIndex(0, 3);
+		tri.setCoordinateIndex(0, 2);
+		
 
 		// Because we're about to spin this triangle, be sure to draw
 		// backfaces.  If we don't, the back side of the triangle is invisible.
-		Appearance ap = new Appearance();
+		SimpleShaderAppearance ap = new SimpleShaderAppearance();
 		PolygonAttributes pa = new PolygonAttributes();
 		pa.setCullFace(PolygonAttributes.CULL_NONE);
 		ap.setPolygonAttributes(pa);
