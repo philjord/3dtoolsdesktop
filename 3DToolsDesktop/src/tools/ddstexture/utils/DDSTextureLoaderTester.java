@@ -39,6 +39,9 @@ import com.jogamp.newt.event.KeyAdapter;
 import com.jogamp.newt.event.KeyEvent;
 
 import compressedtexture.DDSImage;
+import javaawt.VMEventQueue;
+import javaawt.image.VMBufferedImage;
+import javaawt.imageio.VMImageIO;
 import tools.swing.DetailsFileChooser;
 
 /**
@@ -131,6 +134,11 @@ public class DDSTextureLoaderTester
 
 	public static void showImage(String filename, InputStream inputStream, final long stayTime)
 	{
+		// we are about to decompresed to buffered image below, we always need the VM support
+		javaawt.image.BufferedImage.installBufferedImageDelegate(VMBufferedImage.class);
+		javaawt.imageio.ImageIO.installBufferedImageImpl(VMImageIO.class);
+		javaawt.EventQueue.installEventQueueImpl(VMEventQueue.class);	
+		
 		final JFrame f = new JFrame();
 		f.getContentPane().setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
 		f.getContentPane().setBackground(new Color(255, 0, 255));
