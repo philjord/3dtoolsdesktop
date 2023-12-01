@@ -43,11 +43,12 @@ import com.jogamp.newt.event.KeyEvent;
 import compressedtexture.DDSImage;
 import compressedtexture.KTXImage;
 import compressedtexture.dktxtools.ktx.KTXFormatException;
+import etcpack.QuickETC;
+import etcpack.ETCPack;
+import etcpack.ETCPack.FORMAT;
 import javaawt.VMEventQueue;
 import javaawt.image.VMBufferedImage;
 import javaawt.imageio.VMImageIO;
-import tools.ddstexture.utils.analysis.etcpack.ETCPack;
-import tools.ddstexture.utils.analysis.etcpack.ETCPack.FORMAT;
 import tools.swing.DetailsFileChooser;
 
 /**
@@ -69,7 +70,7 @@ public class DDSToETCFileConverter
 			@Override
 			public void directorySelected(File dir)
 			{
-				prefs.put("DDSToTexture", dir.getAbsolutePath());
+				prefs.put("DDSToTexture", dir.getParentFile().getAbsolutePath());
 				System.out.println("Selected dir: " + dir);
 				processDir(dir);
 			}
@@ -153,7 +154,7 @@ public class DDSToETCFileConverter
 		try
 		{
 			ddsImage = DDSImage.read(CompressedTextureLoader.toByteBuffer(inputStream));
-			ddsImage.debugPrint();
+			//ddsImage.debugPrint();
 		}
 		catch (IOException e)
 		{
@@ -163,7 +164,8 @@ public class DDSToETCFileConverter
 
 		Texture2D tex = null;
 
-		NioImageBuffer decompressedImage = new DDSDecompressor(ddsImage, 0, filename).convertImageNio();
+		DDSDecompressor decomp = new DDSDecompressor(ddsImage, 0, filename);
+		NioImageBuffer decompressedImage = decomp.convertImageNio();
 		Buffer b = decompressedImage.getDataBuffer();
 		if (b instanceof ByteBuffer) {
 			//ok so now find the RGB or RGBA byte buffers
@@ -201,17 +203,28 @@ public class DDSToETCFileConverter
 			} else if (fmt == DDSImage.D3DFMT_A8R8G8B8 || fmt == DDSImage.D3DFMT_X8R8G8B8) {
 				format = FORMAT.ETC2PACKAGE_RGBA;
 			} else if (fmt == DDSImage.D3DFMT_DXT1) {
-				// DXT1 might have the odd punch through alpha in it, but there is no way to say if it's just RGB or RGB and some A1
-				format = FORMAT.ETC2PACKAGE_sRGBA1;
+				if(!decomp.decompressedIsOpaque()) {
+					format = FORMAT.ETC2PACKAGE_sRGBA1;
+				} else {
+					format = FORMAT.ETC2PACKAGE_sRGB;
+				}
 			} else if (fmt == DDSImage.D3DFMT_DXT2 || fmt == DDSImage.D3DFMT_DXT3
 					||fmt == DDSImage.D3DFMT_DXT4 || fmt == DDSImage.D3DFMT_DXT5) {
-				format = FORMAT.ETC2PACKAGE_sRGBA;
+				if(!decomp.decompressedIsOpaque()) {
+					format = FORMAT.ETC2PACKAGE_sRGBA;
+				} else {
+					format = FORMAT.ETC2PACKAGE_sRGB;
+				}
 			}	
 			
 			ByteBuffer ktxBB = null;
 			try {
-				ETCPack ep = new ETCPack();
-				ktxBB = ep.compressImageToByteBuffer(img, imgalpha, ddsImage.getWidth(), ddsImage.getHeight(), format, true);									
+				
+				System.out.println("DDSDecompressor.opaque " +decomp.decompressedIsOpaque());
+				//TODO: rip through and check for no non255 alpha and make it a non A type
+				QuickETC ep = new QuickETC();
+				//ETCPack ep = new ETCPack();
+				ktxBB = ep.compressImageToByteBuffer(img, imgalpha, ddsImage.getWidth(), ddsImage.getHeight(), format, false);									
 				KTXImage ktxImage = new KTXImage(ktxBB);
 			} catch (KTXFormatException e) {
 				System.out.println("DDS to KTX image: " + filename);
