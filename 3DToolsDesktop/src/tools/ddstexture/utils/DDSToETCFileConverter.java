@@ -85,6 +85,7 @@ public class DDSToETCFileConverter {
 				});
 
 		dfc.setFileFilter(new FileNameExtensionFilter("dds", "dds"));
+		((JFrame)dfc.getTopLevelAncestor()).setLocationRelativeTo(null);
 	}
 
 	
@@ -236,10 +237,14 @@ public class DDSToETCFileConverter {
 				ByteBuffer ktxBB = null;
 				QuickETC ep = new QuickETC();
 				ktxBB = ep.compressImageToByteBuffer(img, imgalpha, ddsImage.getWidth(), ddsImage.getHeight(), format,
-						false);
+						true);
 				
 				String outfilename = filename.replace(".dds",".ktx");
-				outfilename = "D:\\temp\\" + outfilename.substring(outfilename.indexOf("game_media"));
+				
+				//move from game_media to tmep, otherwise just nex tot itself
+				if(outfilename.indexOf("game_media") != -1) {
+					outfilename = "D:\\temp\\" + outfilename.substring(outfilename.indexOf("game_media"));
+				}
 				File file = new File(outfilename);
 				file.getParentFile().mkdirs();
 				RandomAccessFile raf = null;
