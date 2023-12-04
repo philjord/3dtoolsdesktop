@@ -49,6 +49,7 @@ import com.jogamp.newt.event.KeyEvent;
 import compressedtexture.DDSImage;
 import compressedtexture.KTXImage;
 import compressedtexture.dktxtools.ktx.KTXFormatException;
+import etcpack.ETCPack;
 import etcpack.ETCPack.FORMAT;
 import etcpack.QuickETC;
 import javaawt.VMEventQueue;
@@ -236,6 +237,7 @@ public class DDSToETCFileConverter {
 
 				ByteBuffer ktxBB = null;
 				QuickETC ep = new QuickETC();
+				//ETCPack ep = new ETCPack();
 				ktxBB = ep.compressImageToByteBuffer(img, imgalpha, ddsImage.getWidth(), ddsImage.getHeight(), format,
 						true);
 				
