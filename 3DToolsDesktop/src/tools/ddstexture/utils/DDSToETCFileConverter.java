@@ -55,6 +55,7 @@ import etcpack.QuickETC;
 import javaawt.VMEventQueue;
 import javaawt.image.VMBufferedImage;
 import javaawt.imageio.VMImageIO;
+import texture.DDSToKTXConverter;
 import tools.swing.DetailsFileChooser;
 
 /**
@@ -156,124 +157,55 @@ public class DDSToETCFileConverter {
 
 	public static void convertImage(String filename, InputStream inputStream) {
 		long tstart = System.currentTimeMillis();
-		DDSImage ddsImage;
-		try {
-			ddsImage = DDSImage.read(CompressedTextureLoader.toByteBuffer(inputStream));
-			//ddsImage.debugPrint();
-		} catch (IOException e) {
-			System.out.println(
-					"" + DDSToETCFileConverter.class + " had a  IO problem with " + filename + " : " + e.getMessage());
-			return;
-		}
+		ByteBuffer ktxBB = DDSToKTXConverter.convertDDSToKTX(inputStream, filename);
 
-		if (ddsImage != null) {
-			DDSDecompressor decomp = new DDSDecompressor(ddsImage, 0, filename);
-			NioImageBuffer decompressedImage = decomp.convertImageNio();
-			Buffer b = decompressedImage.getDataBuffer();
-			if (b instanceof ByteBuffer) {
-				//ok so now find the RGB or RGBA byte buffers
-				ByteBuffer bb = (ByteBuffer)decompressedImage.getDataBuffer();
-				byte[] img = null;
-				byte[] imgalpha = null;
-				if (decompressedImage.getImageType() == NioImageBuffer.ImageType.TYPE_3BYTE_RGB) {
-					// just put the RGB data straight into the img byte array 
-					img = new byte[bb.capacity()];
-					bb.get(img, 0, bb.capacity());
-				} else if (decompressedImage.getImageType() == NioImageBuffer.ImageType.TYPE_4BYTE_RGBA) {
-					// copy RGB 3 sets out then 1 sets of alpha 
-					img = new byte[(bb.capacity() / 4) * 3];
-					imgalpha = new byte[(bb.capacity() / 4)];
-					for (int i = 0; i < img.length / 3; i++) {
-						img[i * 3 + 0] = bb.get();
-						img[i * 3 + 1] = bb.get();
-						img[i * 3 + 2] = bb.get();
-						imgalpha[i] = bb.get();
-					}
-				} else  if (decompressedImage.getImageType() == NioImageBuffer.ImageType.TYPE_BYTE_GRAY) {
-					// copy RGB from the 1 byte of L8 data and use RGB (FORMAT.ETC2PACKAGE_R is odd 16 bit thing)
-					img = new byte[bb.capacity() * 3];
-					for (int i = 0; i < img.length / 3; i++) {
-						byte byt = bb.get();
-						img[i * 3 + 0] = byt;
-						img[i * 3 + 1] = byt;
-						img[i * 3 + 2] = byt;
-					}
-				}else {
-					System.err.println("Bad Image Type " + decompressedImage.getImageType());
-					return;
-				}
-
-				//System.out.println("Debug of dds image " + filename);
-				//ddsImage.debugPrint();
-				int fmt = ddsImage.getPixelFormat();
-				FORMAT format = FORMAT.ETC2PACKAGE_RGBA;
-
-				if (fmt == DDSImage.D3DFMT_R8G8B8) {
-					format = FORMAT.ETC2PACKAGE_RGB;
-				} else if (fmt == DDSImage.D3DFMT_A8R8G8B8 || fmt == DDSImage.D3DFMT_X8R8G8B8) {
-					format = FORMAT.ETC2PACKAGE_RGBA;
-				} else if (fmt == DDSImage.D3DFMT_DXT1) {
-					if (!decomp.decompressedIsOpaque()) {
-						format = FORMAT.ETC2PACKAGE_sRGBA1;
-					} else {
-						format = FORMAT.ETC2PACKAGE_sRGB;
-					}
-				} else if (fmt == DDSImage.D3DFMT_DXT2	|| fmt == DDSImage.D3DFMT_DXT3 || fmt == DDSImage.D3DFMT_DXT4
-							|| fmt == DDSImage.D3DFMT_DXT5) {
-					if (!decomp.decompressedIsOpaque()) {
-						format = FORMAT.ETC2PACKAGE_sRGBA;
-					} else {
-						format = FORMAT.ETC2PACKAGE_sRGB;
-					}
-				} else if (fmt == DDSImage.D3DFMT_L8) {
-					format = FORMAT.ETC2PACKAGE_RGB;
-				}
-							 
-				
-				
-				//TODO, perhaps normal maps (_n) should be forcibly set to RGB ( not sRGBA)??
-				if(filename.indexOf("_n.dds") > 0)
-					format = FORMAT.ETC2PACKAGE_RGB;
-
-				ByteBuffer ktxBB = null;
-				QuickETC ep = new QuickETC();
-				//ETCPack ep = new ETCPack();
-				ktxBB = ep.compressImageToByteBuffer(img, imgalpha, ddsImage.getWidth(), ddsImage.getHeight(), format,
-						true);
-				
-				String outfilename = filename.replace(".dds",".ktx");
-				
-				//move from game_media to tmep, otherwise just nex tot itself
-				if(outfilename.indexOf("game_media") != -1) {
-					outfilename = "D:\\temp\\" + outfilename.substring(outfilename.indexOf("game_media"));
-				}
-				File file = new File(outfilename);
-				file.getParentFile().mkdirs();
-				RandomAccessFile raf = null;
-				try {
-					raf = new RandomAccessFile(outfilename, "rw");
-					FileChannel fc = raf.getChannel();
-					ktxBB.rewind();
-					fc.write(ktxBB);
-					fc.close();
-					ktxBB.rewind();
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				} finally {
-					if (raf != null) {
-						try {
-							raf.close();
-						} catch (Exception e) {
-						}
-					}
-				}
-
-				System.out.println(""	+ (System.currentTimeMillis() - tstart) + "ms to compress " + filename + " to "
-									+ outfilename);
+		if (ktxBB != null) {
+			try {
+				KTXImage ktxImage = new KTXImage(ktxBB);
+			} catch (KTXFormatException e) {
+				System.out.println("DDS to KTX image: " + filename);
+				e.printStackTrace();
+			} catch (IOException e) {
+				System.out.println("DDS to KTX image: " + filename);
+				e.printStackTrace();
+			} catch (BufferOverflowException e) {
+				System.out.println("DDS to KTX image: " + filename);
+				e.printStackTrace();
 			}
+			
+			String outfilename = filename.replace(".dds",".ktx");
+			
+			//move from game_media to temp, otherwise just next to itself
+			if(outfilename.indexOf("game_media") != -1) {
+				outfilename = "D:\\temp\\" + outfilename.substring(outfilename.indexOf("game_media"));
+			}
+			File file = new File(outfilename);
+			file.getParentFile().mkdirs();
+			RandomAccessFile raf = null;
+			try {
+				raf = new RandomAccessFile(outfilename, "rw");
+				FileChannel fc = raf.getChannel();
+				ktxBB.rewind();
+				fc.write(ktxBB);
+				fc.close();
+				ktxBB.rewind();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			} finally {
+				if (raf != null) {
+					try {
+						raf.close();
+					} catch (Exception e) {
+					}
+				}
+			}
+
+			System.out.println(""	+ (System.currentTimeMillis() - tstart) + "ms to compress " + filename + " to "
+								+ outfilename);
+
 		} else {
-			System.out.println("bum dds file for " + filename);
-		}
+			System.err.println("Not a DDSToKTXConverter.convertDDSToKTX returned null for " + filename);
+		} 
 	}
 
 	public static void showImage(String filename, InputStream inputStream, final long stayTime) {
@@ -285,76 +217,12 @@ public class DDSToETCFileConverter {
 		final JFrame f = new JFrame();
 		f.getContentPane().setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
 		f.getContentPane().setBackground(new Color(255, 0, 255));
+ 
+		
+		ByteBuffer ktxBB = DDSToKTXConverter.convertDDSToKTX(inputStream, filename);
 
-		DDSImage ddsImage;
-		try {
-			ddsImage = DDSImage.read(CompressedTextureLoader.toByteBuffer(inputStream));
-			//ddsImage.debugPrint();
-		} catch (IOException e) {
-			System.out.println(
-					"" + DDSToETCFileConverter.class + " had a  IO problem with " + filename + " : " + e.getMessage());
-			return;
-		}
-
-		Texture2D tex = null;
-
-		DDSDecompressor decomp = new DDSDecompressor(ddsImage, 0, filename);
-		NioImageBuffer decompressedImage = decomp.convertImageNio();
-		Buffer b = decompressedImage.getDataBuffer();
-		if (b instanceof ByteBuffer) {
-			//ok so now find the RGB or RGBA byte buffers
-			ByteBuffer bb = (ByteBuffer)decompressedImage.getDataBuffer();
-			byte[] img = null;
-			byte[] imgalpha = null;
-			if (decompressedImage.getImageType() == NioImageBuffer.ImageType.TYPE_3BYTE_RGB) {
-				// just put the RGB data straight into the img byte array 
-				img = new byte[bb.capacity()];
-				bb.get(img, 0, bb.capacity());
-			} else if (decompressedImage.getImageType() == NioImageBuffer.ImageType.TYPE_4BYTE_RGBA) {
-				// copy RGB 3 sets out then 1 sets of alpha 
-				img = new byte[(bb.capacity() / 4) * 3];
-				imgalpha = new byte[(bb.capacity() / 4)];
-				for (int i = 0; i < img.length / 3; i++) {
-					img[i * 3 + 0] = bb.get();
-					img[i * 3 + 1] = bb.get();
-					img[i * 3 + 2] = bb.get();
-					imgalpha[i] = bb.get();
-				}
-			} else {
-				System.err.println("Bad Image Type " + decompressedImage.getImageType());
-				return;
-			}
-
-			//System.out.println("Debug of dds image " + filename);
-			//ddsImage.debugPrint();
-			int fmt = ddsImage.getPixelFormat();
-			FORMAT format = FORMAT.ETC2PACKAGE_RGBA;
-
-			if (fmt == DDSImage.D3DFMT_R8G8B8) {
-				format = FORMAT.ETC2PACKAGE_RGB;
-			} else if (fmt == DDSImage.D3DFMT_A8R8G8B8 || fmt == DDSImage.D3DFMT_X8R8G8B8) {
-				format = FORMAT.ETC2PACKAGE_RGBA;
-			} else if (fmt == DDSImage.D3DFMT_DXT1) {
-				if (!decomp.decompressedIsOpaque()) {
-					format = FORMAT.ETC2PACKAGE_sRGBA1;
-				} else {
-					format = FORMAT.ETC2PACKAGE_sRGB;
-				}
-			} else if (fmt == DDSImage.D3DFMT_DXT2	|| fmt == DDSImage.D3DFMT_DXT3 || fmt == DDSImage.D3DFMT_DXT4
-						|| fmt == DDSImage.D3DFMT_DXT5) {
-				if (!decomp.decompressedIsOpaque()) {
-					format = FORMAT.ETC2PACKAGE_sRGBA;
-				} else {
-					format = FORMAT.ETC2PACKAGE_sRGB;
-				}
-			}
-
-			ByteBuffer ktxBB = null;
+		if (ktxBB != null) {
 			try {
-				QuickETC ep = new QuickETC();
-				//ETCPack ep = new ETCPack();
-				ktxBB = ep.compressImageToByteBuffer(img, imgalpha, ddsImage.getWidth(), ddsImage.getHeight(), format,
-						false);
 				KTXImage ktxImage = new KTXImage(ktxBB);
 			} catch (KTXFormatException e) {
 				System.out.println("DDS to KTX image: " + filename);
@@ -367,6 +235,8 @@ public class DDSToETCFileConverter {
 				e.printStackTrace();
 			}
 
+		} else {
+			System.err.println("Not a DDSToKTXConverter.convertDDSToKTX returned null for " + filename);
 		}
 	}
 
